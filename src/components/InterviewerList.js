@@ -13,8 +13,8 @@ export default function InterviewerList(props) {
       key={index}
       name={interviewer.name}
       avatar={interviewer.avatar}
-      selected={props.interviewer && interviewer.id === 3}
-      setInterviewer={props.setInterviewer}
+      selected={props.value === interviewer.id}
+      setInterviewer={props.onChange}
     >
       <h4 className="interviewers__header text--light">interviewer</h4>
       <ul className="interviewers__list"></ul>
