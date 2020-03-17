@@ -1,4 +1,5 @@
 import React from "react";
+import "components/InterviewerListItem.scss";
 import InterviewerListItem from "components/InterviewerListItem";
 const classNames = require("classnames");
 
