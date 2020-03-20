@@ -1,5 +1,5 @@
 import React from "react";
-import "components/InterviewerListItem.scss";
+import "components/InterviewerList.scss";
 import InterviewerListItem from "components/InterviewerListItem";
 const classNames = require("classnames");
 
@@ -8,7 +8,7 @@ export default function InterviewerList(props) {
     interviewers__header: props.header,
     interviewers__list: props.list
   });
-  const interviewer = props.interviewers.map(interviewer => {
+  const interviewers = props.interviewers.map(interviewer => {
     return (
       <InterviewerListItem
         className={interviewerClass}
@@ -18,11 +18,13 @@ export default function InterviewerList(props) {
         selected={props.interviewer === interviewer.id}
         id={interviewer.id}
         setInterviewer={props.setInterviewer}
-      >
-        <h4 className="interviewers__header text--light">interviewer</h4>
-        <ul className="interviewers__list"></ul>
-      </InterviewerListItem>
+      ></InterviewerListItem>
     );
   });
-  return <ul>{interviewer}</ul>;
+  return (
+    <div className={interviewerClass}>
+      <h4 className="interviewers__header text--light">Interviewer</h4>
+      <ul className="interviewers__list">{interviewers}</ul>
+    </div>
+  );
 }

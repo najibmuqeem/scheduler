@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import "components/Application.scss";
-import axios from "axios";
 
 import DayList from "components/DayList";
 import Appointment from "components/Appointment";
@@ -11,41 +10,28 @@ import {
   getInterview
 } from "helpers/selectors.js";
 
+import { useApplicationData } from "hooks/useApplicationData";
+
 export default function Application(props) {
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {}
-  });
-
-  const setDay = day => setState({ ...state, day });
-
-  useEffect(() => {
-    Promise.all([
-      axios.get(`/api/days`),
-      axios.get(`/api/appointments`),
-      axios.get(`/api/interviewers`)
-    ]).then(all => {
-      const days = all[0].data;
-      const appointments = all[1].data;
-      const interviewers = all[2].data;
-      setState(prev => ({
-        ...prev,
-        days,
-        appointments,
-        interviewers
-      }));
-    });
-  }, []);
-
+  const {
+    state,
+    setDay,
+    bookInterview,
+    deleteInterview
+  } = useApplicationData();
+  const interviewersForDay = getInterviewersForDay(state, state.day);
   const appointmentList = getAppointmentsForDay(state, state.day).map(
     appointment => {
       const interview = getInterview(state, appointment.interview);
+
       return (
         <Appointment
           key={appointment.id}
           interview={interview}
-          interviewers={getInterviewersForDay(state, state.day)}
+          allInterviewers={state.interviewers}
+          interviewers={interviewersForDay}
+          bookInterview={bookInterview}
+          deleteInterview={deleteInterview}
           {...appointment}
         >
           <h4 className="interviewers__header text--light">interviewer</h4>
@@ -54,6 +40,7 @@ export default function Application(props) {
       );
     }
   );
+
   return (
     <main className="layout">
       <section className="sidebar">
@@ -74,7 +61,10 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">{appointmentList}</section>
+      <section className="schedule">
+        {appointmentList}
+        <Appointment key="last" time="5pm" />
+      </section>
     </main>
   );
 }

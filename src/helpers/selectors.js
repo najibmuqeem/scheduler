@@ -27,7 +27,6 @@ export function getInterviewersForDay(state, day) {
   const { appointments } = filteredDays[0];
 
   const interviewers = [];
-
   for (let appt of Object.values(state.appointments)) {
     if (!appointments.includes(appt.id) && appt.interview) {
       let interviewer = appt.interview.interviewer.toString();
