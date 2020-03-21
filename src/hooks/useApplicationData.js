@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 export function useApplicationData() {
@@ -9,7 +9,37 @@ export function useApplicationData() {
   });
 
   const setDay = day => setState({ ...state, day });
-
+  const bookInterview = useCallback(
+    (id, interview) => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview }
+      };
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      return axios
+        .put(`api/appointments/${id}`, appointment)
+        .then(() => setState(prev => ({ ...prev, appointments })));
+    },
+    [state.appointments]
+  );
+  const deleteInterview = useCallback(
+    id => {
+      const appointment = {
+        ...state.appointments[id]
+      };
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      return axios
+        .delete(`api/appointments/${id}`)
+        .then(() => setState(prev => ({ ...prev, appointments })));
+    },
+    [state.appointments]
+  );
   useEffect(() => {
     Promise.all([
       axios.get(`/api/days`),
@@ -26,34 +56,7 @@ export function useApplicationData() {
         interviewers
       }));
     });
-  }, []);
-
-  function bookInterview(id, interview) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return axios
-      .put(`api/appointments/${id}`, appointment)
-      .then(() => setState(prev => ({ ...prev, appointments })));
-  }
-
-  function deleteInterview(id) {
-    const appointment = {
-      ...state.appointments[id]
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return axios
-      .delete(`api/appointments/${id}`)
-      .then(() => setState(prev => ({ ...prev, appointments })));
-  }
+  }, [deleteInterview, bookInterview]);
 
   return { state, setDay, bookInterview, deleteInterview };
 }
