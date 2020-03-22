@@ -43,7 +43,7 @@ export function getInterview(state, interview) {
   if (!interview) {
     return null;
   }
-  const { student, interviewer } = interview;
+  const { interviewer } = interview;
   let name = "";
   let avatar = "";
   for (const key in state.interviewers) {
@@ -53,7 +53,7 @@ export function getInterview(state, interview) {
     }
   }
   return {
-    student,
+    student: interview.student,
     interviewer: { id: interviewer, name, avatar }
   };
 }

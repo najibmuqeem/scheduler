@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useCallback } from "react";
 import axios from "axios";
+const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
 
 export function useApplicationData() {
   const SET_DAY = "SET_DAY";
@@ -12,7 +13,7 @@ export function useApplicationData() {
       case SET_DAY:
         return {
           ...state,
-          value
+          day: value
         };
       case SET_APPLICATION_DATA:
         let { days, appointments, interviewers } = value;
@@ -72,6 +73,27 @@ export function useApplicationData() {
     },
     [state.appointments]
   );
+
+  useEffect(() => {
+    socket.addEventListener("open", e => {
+      socket.send("ping");
+    });
+    socket.addEventListener("message", e => {
+      const message = JSON.parse(e.data);
+      const appointment = {
+        ...state.appointments[message.id],
+        interview: { ...message.interview }
+      };
+      const appointments = {
+        ...state.appointments,
+        [message.id]: appointment
+      };
+      if (message.type === "SET_INTERVIEW") {
+        dispatch({ type: SET_INTERVIEW, value: appointments });
+      }
+    });
+  });
+
   useEffect(() => {
     Promise.all([
       axios.get(`/api/days`),

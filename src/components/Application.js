@@ -48,7 +48,8 @@ export default function Application(props) {
           className="sidebar--centered"
           src="images/logo.png"
           alt="Interview Scheduler"
-        />
+        /> appointment.interview);
+
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <ul>
