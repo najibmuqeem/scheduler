@@ -1,40 +1,13 @@
 import { useReducer, useEffect, useCallback } from "react";
 import axios from "axios";
+import reducer, {
+  SET_DAY,
+  SET_APPLICATION_DATA,
+  SET_INTERVIEW
+} from "reducers/application";
 const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
 
 export function useApplicationData() {
-  const SET_DAY = "SET_DAY";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
-
-  function reducer(state, action) {
-    let value = action.value;
-    switch (action.type) {
-      case SET_DAY:
-        return {
-          ...state,
-          day: value
-        };
-      case SET_APPLICATION_DATA:
-        let { days, appointments, interviewers } = value;
-        return {
-          ...state,
-          days,
-          appointments,
-          interviewers
-        };
-      case SET_INTERVIEW: {
-        return {
-          ...state,
-          value
-        };
-      }
-      default:
-        throw new Error(
-          `Tried to reduce with unsupported action type: ${action.type}`
-        );
-    }
-  }
   const [state, dispatch] = useReducer(reducer, {
     day: "Monday",
     days: [],
@@ -67,9 +40,11 @@ export function useApplicationData() {
         ...state.appointments,
         [id]: appointment
       };
-      return axios
-        .delete(`api/appointments/${id}`)
-        .then(() => dispatch({ type: SET_INTERVIEW, value: appointments }));
+      console.log("deleting... ", appointments);
+      return axios.delete(`api/appointments/${id}`).then(() => {
+        console.log("deleting complete");
+        dispatch({ type: SET_INTERVIEW, value: appointments });
+      });
     },
     [state.appointments]
   );
