@@ -11,7 +11,11 @@ export function getAppointmentsForDay(state, day) {
 
 export function getInterviewersForDay(state, day) {
   const foundDay = state.days.find(stateDay => day === stateDay.name);
-  if (!foundDay || foundDay.interviewers.length === 0) {
+  if (
+    !foundDay ||
+    !foundDay.interviewers ||
+    foundDay.interviewers.length === 0
+  ) {
     return [];
   }
   const foundInterviewers = foundDay.interviewers.map(interviewer => {
