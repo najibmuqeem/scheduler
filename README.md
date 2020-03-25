@@ -4,20 +4,6 @@
 
 Install dependencies with `npm install`.
 
-## Running Webpack Development Server
+## Enjoy!
 
-```sh
-npm start
-```
-
-## Running Jest Test Framework
-
-```sh
-npm test
-```
-
-## Running Storybook Visual Testbed
-
-```sh
-npm run storybook
-```
+[Here](https://5e7bb2fe6510558a846e45eb--elegant-elion-6fb0e6.netlify.com/) is the link to a preview of a production version of Interview Scheduler!
